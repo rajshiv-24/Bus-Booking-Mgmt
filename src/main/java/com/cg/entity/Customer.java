@@ -26,7 +26,7 @@ public class Customer {
         this.custName = custName;
         this.phoneNo = phoneNo;
         this.bookings = bookings;
-    }
+    }//mai aarha hu ...this is my final code
 
     public Long getCustId() { return custId; }
     public void setCustId(Long custId) { this.custId = custId; }
