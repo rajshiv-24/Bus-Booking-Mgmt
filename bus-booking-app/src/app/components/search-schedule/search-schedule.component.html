@@ -1,0 +1,87 @@
+<div class="page-container">
+
+  <div class="mb-4">
+    <h3 class="fw-bold">Search Bus Schedules</h3>
+    <p class="text-muted">Find available buses between cities</p>
+  </div>
+
+  <!-- Search Box -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold text-uppercase text-muted">From</label>
+          <input [(ngModel)]="src" type="text" class="form-control"
+                 placeholder="e.g. Delhi" (keyup.enter)="search()" />
+        </div>
+        <div class="col-md-1 text-center pb-2">
+          <span class="fs-4 text-muted">⇄</span>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold text-uppercase text-muted">To</label>
+          <input [(ngModel)]="dest" type="text" class="form-control"
+                 placeholder="e.g. Mumbai" (keyup.enter)="search()" />
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-dark w-100 fw-bold" (click)="search()" [disabled]="loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ loading ? 'Searching...' : '🔍 Search' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+  <!-- No Results -->
+  <div class="text-center py-5" *ngIf="searched && schedules.length === 0">
+    <div style="font-size:3rem;">😕</div>
+    <p class="text-muted mt-2">No schedules found for
+      <strong>{{ src }}</strong> → <strong>{{ dest }}</strong>
+    </p>
+  </div>
+
+  <!-- Results -->
+  <div *ngIf="searched && schedules.length > 0">
+    <p class="text-muted small mb-3">{{ schedules.length }} schedule(s) found</p>
+
+    <div class="card shadow-sm mb-3" *ngFor="let s of schedules"
+         style="border-left: 4px solid #212529;">
+      <div class="card-body">
+        <div class="row align-items-center">
+
+          <div class="col-md-7">
+            <h5 class="fw-bold mb-1">
+              {{ s.busRoute.src }}
+              <span class="text-muted mx-2">→</span>
+              {{ s.busRoute.dest }}
+            </h5>
+            <p class="mb-1 text-muted small">🕐 Departure: {{ s.departureTime }}</p>
+            <p class="mb-0 text-muted small">📅 Date: {{ s.scheduleDt }}</p>
+          </div>
+
+          <div class="col-md-2 text-center">
+            <div class="fw-bold fs-5"
+                 [ngClass]="s.avlSeats < 5 ? 'text-danger' : 'text-dark'">
+              {{ s.avlSeats }}
+            </div>
+            <div class="text-muted small">/ {{ s.totSeats }} seats</div>
+            <span class="badge bg-success mt-1">{{ s.schStatus }}</span>
+          </div>
+
+          <div class="col-md-3 text-end">
+            <button class="btn btn-warning fw-bold"
+                    (click)="bookNow(s.id)"
+                    [disabled]="s.avlSeats === 0">
+              {{ s.avlSeats === 0 ? 'Sold Out' : 'Book Now' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
