@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.p2/
+.metadata/
+*.exe
