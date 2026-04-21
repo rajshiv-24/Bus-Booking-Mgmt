@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+  <a class="navbar-brand fw-bold" routerLink="/search">🚌 BusBooker</a>
+
+  <div class="collapse navbar-collapse" *ngIf="authService.isLoggedIn()">
+    <ul class="navbar-nav ms-auto align-items-center gap-2">
+
+      <ng-container *ngIf="!authService.isAdmin()">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/my-bookings" routerLinkActive="active">My Bookings</a>
+        </li>
+      </ng-container>
+
+      <ng-container *ngIf="authService.isAdmin()">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">Manage Schedules</a>
+        </li>
+      </ng-container>
+
+      <li class="nav-item">
+        <span class="badge" [ngClass]="authService.isAdmin() ? 'bg-warning text-dark' : 'bg-secondary'">
+          {{ authService.isAdmin() ? 'ADMIN' : 'USER' }}
+        </span>
+      </li>
+
+      <li class="nav-item">
+        <button class="btn btn-outline-danger btn-sm" (click)="logout()">Logout</button>
+      </li>
+
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,123 @@
+<div class="page-container">
+
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h3 class="fw-bold mb-0">Manage Schedules</h3>
+      <p class="text-muted small mb-0">Add, edit or remove bus schedules</p>
+    </div>
+    <button class="btn btn-dark fw-bold" (click)="openAddForm()">+ Add Schedule</button>
+  </div>
+
+  <!-- Success / Error alerts -->
+  <div class="alert alert-success alert-dismissible" *ngIf="successMsg">
+    ✅ {{ successMsg }}
+    <button type="button" class="btn-close" (click)="successMsg=''"></button>
+  </div>
+  <div class="alert alert-danger" *ngIf="error && !showForm">❌ {{ error }}</div>
+
+  <!-- Add / Edit Form -->
+  <div class="card shadow-sm mb-4" *ngIf="showForm"
+       style="border-top: 4px solid #ffc107;">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">{{ isEditing ? '✏️ Edit Schedule' : '➕ Add New Schedule' }}</h5>
+
+      <div class="row g-3">
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold text-uppercase text-muted">Route ID</label>
+          <input [(ngModel)]="form.routeId" type="number" class="form-control" placeholder="1" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold text-uppercase text-muted">Departure</label>
+          <input [(ngModel)]="form.departureTime" type="time" class="form-control" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold text-uppercase text-muted">Date</label>
+          <input [(ngModel)]="form.scheduleDt" type="date" class="form-control" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold text-uppercase text-muted">Avl Seats</label>
+          <input [(ngModel)]="form.avlSeats" type="number" class="form-control" />
+        </div>
+        <div class="col-md-1">
+          <label class="form-label small fw-semibold text-uppercase text-muted">Total</label>
+          <input [(ngModel)]="form.totSeats" type="number" class="form-control" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold text-uppercase text-muted">Status</label>
+          <select [(ngModel)]="form.schStatus" class="form-select">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option>
+            <option value="CANCELLED">CANCELLED</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="alert alert-danger mt-3 mb-0" *ngIf="error && showForm">{{ error }}</div>
+
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-dark fw-bold" (click)="saveSchedule()">
+          {{ isEditing ? '💾 Update Schedule' : '➕ Add Schedule' }}
+        </button>
+        <button class="btn btn-outline-secondary" (click)="cancelForm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-dark"></div>
+    <p class="mt-2 text-muted">Loading schedules...</p>
+  </div>
+
+  <!-- Empty -->
+  <div class="text-center py-4" *ngIf="!loading && schedules.length === 0">
+    <p class="text-muted">No schedules found. Add one!</p>
+  </div>
+
+  <!-- Table -->
+  <div class="card shadow-sm" *ngIf="!loading && schedules.length > 0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Route</th>
+            <th>Departure</th>
+            <th>Date</th>
+            <th>Seats</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of schedules">
+            <td class="fw-semibold">#{{ s.id }}</td>
+            <td>{{ s.busRoute.src }} → {{ s.busRoute.dest }}</td>
+            <td>{{ s.departureTime }}</td>
+            <td>{{ s.scheduleDt }}</td>
+            <td>
+              <span [ngClass]="s.avlSeats < 5 ? 'text-danger fw-bold' : 'text-dark'">
+                {{ s.avlSeats }}
+              </span>
+              / {{ s.totSeats }}
+            </td>
+            <td>
+              <span class="badge"
+                    [ngClass]="s.schStatus === 'ACTIVE' ? 'bg-success' :
+                               s.schStatus === 'CANCELLED' ? 'bg-danger' : 'bg-secondary'">
+                {{ s.schStatus }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-1"
+                      (click)="openEditForm(s)">✏️ Edit</button>
+              <button class="btn btn-sm btn-outline-danger"
+                      (click)="deleteSchedule(s.id)">🗑 Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

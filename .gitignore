@@ -35,3 +35,9 @@ build/
 .p2/
 .metadata/
 *.exe
+
+
+bus-booking-app/node_modules/
+node_modules/
+dist/
+.env
